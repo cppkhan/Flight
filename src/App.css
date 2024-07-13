@@ -1,38 +1,132 @@
-.App {
-  text-align: center;
+.container {
+
+   flex-direction: column;
+    align-items: center;
+    margin: 20px;
+
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.Form-inner {
+  display: flex;
+    flex: 1;
+    flex-direction: column;
+
+    width: 100%;
+}
+.Form-inner label {
+  width: 100%;
+  margin-top: 10px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.Form-inner input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+
+  box-sizing: border-box;
+
+}
+.Header-color {
+
+  color: #2964dd;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.button-style {
+background-color: hsl(220, 73%, 51%);
+border: 2px solid transparent;
+width: 150px;
+height: 50px;
+color: beige;
+margin-top: 20px;
+border-radius: 10px;
+font-size: 20px;
+  cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button-style:hover {
+  background-color: white;
+  color: #2964dd;
+border-width: 1px;
+  border-color:#2964dd;
+
+}
+.text-label {
+color: black;
+font-weight: 700;
+font-size: large;
+
+}
+
+.flight-container {
+display: flex;
+  flex: 1;
+  flex-direction: column;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+margin-top: 20px;
+  padding: 20px;
+  border-radius: 20px;
+  background-color: #fff;
+
+
+}
+
+.heading-flight {
+  display: flex;
+  flex-wrap: wrap;
+  /* Allows items to wrap to the next line */
+  gap: 20px;
+  /* Adds space between the items */
+}
+
+.flight-detail {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  /* Arrange label and value in a column */
+  flex: 1 1 150px;
+  /* Flex-grow, flex-shrink, and base size */
+  min-width: 150px;
+  /* Minimum width for each item */
 }
 
-.App-link {
-  color: #61dafb;
+.label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  /* Adds some space between the label and the value */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.value {
+  margin-bottom: 15px;
+  /* Adds some space after the value */
+}
+
+.description-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  /* Adds space between the spans */
+}
+.delays-container span{
+ font-size: 20px; 
+
+}
+
+.label {
+  font-weight: bold;
+}
+.delays-label {
+  font-size: 20px;
+
+
+}
+.time-container{
+  margin-top: 20px;
+}
+
+.nothing-container{
+display: flex;
+flex: 1;
+font-weight: bold;
+font-size: 20px;
+
 }
