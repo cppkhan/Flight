@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import requests
 from flask_cors import CORS 
 import uuid 
+import awsgi
 
 app = Flask(__name__)
 
@@ -80,6 +81,9 @@ def get_flights():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+def lambda_handler(event, context):
+    return awsgi.response(app, event, context, base64_content_types={"image/png"})
 
 if __name__ == '__main__':
     app.run(debug=True)

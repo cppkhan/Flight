@@ -14,7 +14,8 @@ const App = () => {
 
   const fetchFlights = async () => {
     try {
-     var url = 'http://127.0.0.1:5000/flights';
+    // var url = 'http://127.0.0.1:5000/flights';
+   var url = "https://2zfayfx8f6.execute-api.eu-north-1.amazonaws.com/dev/flights"
     console.log(destination,airlines.length);
       if (destination || airlines.length > 0) {
        const params = new URLSearchParams();
