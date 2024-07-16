@@ -7,11 +7,16 @@ const App = () => {
   const [flights, setFlights] = useState([]);
   const [destination, setDestination] = useState('');
   const [airlines, setAirlines] = useState('');
+  useEffect(()=>{
+if (!flights||!destination){
+setFlights([])
+}
+  },[flights,destination])
   const fetchFlights = async () => {
     try {
+       
     //  var url = 'http://127.0.0.1:5000/flights';
      var url = "https://2zfayfx8f6.execute-api.eu-north-1.amazonaws.com/dev/flights"
-    console.log(destination,airlines.length);
       if (destination || airlines.length > 0) {
        const params = new URLSearchParams();
         if (destination) params.append('destination', destination);
