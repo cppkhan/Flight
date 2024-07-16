@@ -90,7 +90,7 @@ def get_flights():
         # Extract only the flight with the latest actual_departure_at
         latest_flight = min(filtered_flights, key=lambda x: parse_iso_datetime(x['actual_departure_at']))
 
-        return jsonify(["latest_flight"])
+        return jsonify([latest_flight])
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
