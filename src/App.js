@@ -90,7 +90,7 @@ const FlightView=()=>{
 }
 const TextFeild=()=>{
   return(
-          <form   onSubmit={(e) => { e.preventDefault(); fetchFlights(); }}>
+          <form   onSubmit={(e) => { e.preventDefault() }}>
         <div className="Form-inner">
         <label  className='text-label' htmlFor="destination">Destination*:</label>
         <input
@@ -110,7 +110,7 @@ const TextFeild=()=>{
           required
         />
         </div>
-        <button className='button-style' type="submit">Search</button>
+        <button className='button-style' type="submit" onClick={()=>(destination&&airlines)?fetchFlights():null} >Search</button>
       </form>
   )
 }
