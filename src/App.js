@@ -7,15 +7,10 @@ const App = () => {
   const [flights, setFlights] = useState([]);
   const [destination, setDestination] = useState('');
   const [airlines, setAirlines] = useState('');
-
-  // useEffect(() => {
-  //   fetchFlights();
-  // }, [destination, airlines]);
-
   const fetchFlights = async () => {
     try {
-    // var url = 'http://127.0.0.1:5000/flights';
-   var url = "https://2zfayfx8f6.execute-api.eu-north-1.amazonaws.com/dev/flights"
+    //  var url = 'http://127.0.0.1:5000/flights';
+     var url = "https://2zfayfx8f6.execute-api.eu-north-1.amazonaws.com/dev/flights"
     console.log(destination,airlines.length);
       if (destination || airlines.length > 0) {
        const params = new URLSearchParams();
@@ -32,33 +27,9 @@ const App = () => {
       console.error('Error fetching flights:', error);
     }
   };
-
-  return (
-    <div className="container">
-      <h1 className='Header-color'>Flight Information</h1>
-      <form   onSubmit={(e) => { e.preventDefault(); fetchFlights(); }}>
-        <div className="Form-inner">
-        <label  className='text-label' htmlFor="destination">Destination*:</label>
-        <input
-          type="text"
-          id="destination"
-         
-          value={destination}
-          onChange={(e) => setDestination(e.target.value)}
-          required
-        />
-        <label className='text-label' htmlFor="airlines">Airlines*:</label>
-        <input
-          type="text"
-          id="airlines"
-          value={airlines}
-          onChange={(e) => setAirlines(e.target.value.split(','))}
-          required
-        />
-        </div>
-        <button className='button-style' type="submit">Search</button>
-      </form>
-      <ul>
+const FlightView=()=>{
+  return(
+          <ul>
  {(destination&&airlines&&flights.length>0)?flights.map(flight => (
   <div className='flight-container' key={flight.id}>
 <div className="heading-flight">
@@ -115,6 +86,39 @@ const App = () => {
           </div> }
 
       </ul>
+  )
+}
+const TextFeild=()=>{
+  return(
+          <form   onSubmit={(e) => { e.preventDefault(); fetchFlights(); }}>
+        <div className="Form-inner">
+        <label  className='text-label' htmlFor="destination">Destination*:</label>
+        <input
+          type="text"
+          id="destination"
+         
+          value={destination}
+          onChange={(e) => setDestination(e.target.value)}
+          required
+        />
+        <label className='text-label' htmlFor="airlines">Airlines*:</label>
+        <input
+          type="text"
+          id="airlines"
+          value={airlines}
+          onChange={(e) => setAirlines(e.target.value.split(','))}
+          required
+        />
+        </div>
+        <button className='button-style' type="submit">Search</button>
+      </form>
+  )
+}
+  return (
+    <div className="container">
+      <h1 className='Header-color'>Flight Information</h1>
+{TextFeild()}
+{FlightView()}
     </div>
   );
 };

@@ -1,8 +1,11 @@
+
+
 from flask import Flask, request, jsonify
 import requests
-from flask_cors import CORS 
-import uuid 
+from flask_cors import CORS
+import uuid
 import awsgi
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -13,9 +16,10 @@ FLIGHT_SCHEDULES_URL = "https://challenge.usecosmos.cloud/flight_schedules.json"
 FLIGHT_DELAYS_URL = "https://challenge.usecosmos.cloud/flight_delays.json"
 
 def fetch_json_data(url):
+    # Function to fetch JSON data from a given URL
     try:
         response = requests.get(url)
-        response.raise_for_status() 
+        response.raise_for_status()
         return response.json()
     except requests.exceptions.HTTPError as http_err:
         print(f"HTTP error occurred: {http_err}")
@@ -25,17 +29,23 @@ def fetch_json_data(url):
         print(f"Value error occurred: {val_err}")
     return None
 
+def parse_iso_datetime(iso_datetime_str):
+    # Function to parse ISO format datetime strings
+    if iso_datetime_str.endswith('Z'):
+        iso_datetime_str = iso_datetime_str[:-1] + '+00:00'
+    return datetime.fromisoformat(iso_datetime_str)
+
 @app.route('/flights', methods=['GET'])
 def get_flights():
+    
     try:
-       
         schedules_response = fetch_json_data(FLIGHT_SCHEDULES_URL)
-        airlines_param = request.args.getlist('airlines')
-        schedules_response=schedules_response['FlightStatusResource']["Flights"]["Flight"]
+        schedules_response = schedules_response['FlightStatusResource']["Flights"]["Flight"]
         delays_response = fetch_json_data(FLIGHT_DELAYS_URL)
         if not schedules_response or not delays_response:
             return jsonify({'error': 'Failed to fetch flight data'}), 500
-        flights = []
+
+        flights = {}
         for schedule in schedules_response:
             flight_number = schedule['MarketingCarrier']['FlightNumber']
             airline = schedule['MarketingCarrier']['AirlineID']
@@ -55,35 +65,38 @@ def get_flights():
                             }
                             delays.append(delay_info)
 
-            flight_record = {
-                'id': str(uuid.uuid4()), 
-                'flight_number': flight_number,
-                'airline': airline,
-                'origin': origin,
-                'destination': destination,
-                'scheduled_departure_at': scheduled_departure_at,
-                'actual_departure_at': actual_departure_at,
-                'delays': delays
-            }
-
-            flights.append(flight_record)
+            date_key = parse_iso_datetime(actual_departure_at).date()
+            key = (airline, destination, date_key)
+            if key not in flights or parse_iso_datetime(actual_departure_at) > parse_iso_datetime(flights[key]['actual_departure_at']):
+                flights[key] = {
+                    'id': str(uuid.uuid4()),
+                    'flight_number': flight_number,
+                    'airline': airline,
+                    'origin': origin,
+                    'destination': destination,
+                    'scheduled_departure_at': scheduled_departure_at,
+                    'actual_departure_at': actual_departure_at,
+                    'delays': delays
+                }
 
         destination_param = request.args.get('destination')
         airlines_param = request.args.getlist('airlines')
         filtered_flights = []
-
-        for flight in flights:
+        for flight in flights.values():
             if (not destination_param or flight['destination'] == destination_param) and \
                (not airlines_param or flight['airline'] in airlines_param):
                 filtered_flights.append(flight)
-       
-        return jsonify(filtered_flights)
+
+        # Extract only the flight with the latest actual_departure_at
+        latest_flight = min(filtered_flights, key=lambda x: parse_iso_datetime(x['actual_departure_at']))
+
+        return jsonify(["latest_flight"])
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
+
 def lambda_handler(event, context):
     return awsgi.response(app, event, context, base64_content_types={"image/png"})
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app.run(debug=True)
